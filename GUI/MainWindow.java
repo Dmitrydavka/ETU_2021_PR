@@ -15,7 +15,7 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         initUI();
     }
-
+    static int count = 0;
     private void initUI() {
         DrawPanel drawPanel = new DrawPanel();
         add(drawPanel);
@@ -32,7 +32,8 @@ public class MainWindow extends JFrame {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                graph.addNode(Integer.toString(counter++), e.getX(), e.getY());
+                System.out.println(Character.toString((count)+'a')+" " + e.getX() + " " + e.getY());
+                graph.addNode(Character.toString((count++)+'a'), e.getX(), e.getY());
             }
         });
     }
@@ -40,28 +41,28 @@ public class MainWindow extends JFrame {
     public static void main(String[] args) {
         MainWindow mainWindow = new MainWindow();
 
-        graph.addNode("a", 100, 50);
-        graph.addNode("b", 100, 100);
-        graph.addNode("c", 50, 100);
-        graph.addNode("d", 50, 50);
-
-        graph.addEdge("a", "b");
-        graph.addEdge("b", "c");
-        graph.addEdge("c", "d");
-        graph.addEdge("d", "b");
-        graph.addEdge("a", "c");
+//        graph.addNode("a", 100, 50);
+//        graph.addNode("b", 100, 100);
+//        graph.addNode("c", 50, 100);
+//        graph.addNode("d", 50, 50);
+//
+//        graph.addEdge("a", "b");
+//        graph.addEdge("b", "c");
+//        graph.addEdge("c", "d");
+//        graph.addEdge("d", "b");
+//        graph.addEdge("a", "c");
         graph.print();
     }
 
     class DrawPanel extends JPanel {
 
         private void render(Graphics g) {
-
             var g2d = (Graphics2D) g;
             g2d.setColor(Color.GREEN);
 
             for (Map.Entry<String, Graph.Node> node : graph.nodes.entrySet()) {
-                Ellipse2D ellipse2D = new Ellipse2D.Double(node.getValue().x - 25, node.getValue().y - 25, 50,  50);
+
+                Ellipse2D ellipse2D = new Ellipse2D.Double(node.getValue().x- 25 - 8, node.getValue().y - 25 - 31, 50,  50);
                 g2d.fill(ellipse2D);
                 g2d.draw(ellipse2D);
             }
