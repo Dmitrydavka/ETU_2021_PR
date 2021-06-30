@@ -3,6 +3,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import javax.swing.*;
@@ -32,8 +33,25 @@ public class MainWindow extends JFrame {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                System.out.println(Character.toString((count)+'a')+" " + e.getX() + " " + e.getY());
-                graph.addNode(Character.toString((count++)+'a'), e.getX(), e.getY());
+                if (graph.isNode(e.getX(),e.getY())) {
+                    String first = graph.getNameNode(e.getX(),e.getY());
+                    addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseReleased(MouseEvent ev) {
+                            if (graph.isNode(ev.getX(),ev.getY())){
+                                String second = graph.getNameNode(ev.getX(),ev.getY());
+                                graph.addEdge(first, second);
+                                graph.print();
+
+                            }
+                        }
+                    });
+                }
+                else{
+                    System.out.println(Character.toString((count)+'a')+" " + e.getX() + " " + e.getY());
+                    graph.addNode(Character.toString((count++)+'a'), e.getX(), e.getY());
+                }
+
             }
         });
     }
@@ -86,6 +104,18 @@ public class MainWindow extends JFrame {
             }
         }
 
+        public boolean isNode(int CordsX, int CordsY){
+            for(Node node: nodes.values())
+                if(CordsX < node.x + 25 && CordsX > node.x - 25 && CordsY < node.y + 25 && CordsY > node.y - 25) return true;
+            return false;
+        }
+
+        public String getNameNode(int CordsX, int CordsY){
+            for(Node node: nodes.values())
+                if(CordsX < node.x + 25 && CordsX > node.x - 25 && CordsY < node.y + 25 && CordsY > node.y - 25) return node.name;
+            return "NONE";
+        }
+
         public void addEdge(Node firstNode, Node secondNode) {
             nodes.get(firstNode).addEdge(secondNode);
         }
@@ -98,6 +128,7 @@ public class MainWindow extends JFrame {
             for (Map.Entry<String, Node> node : nodes.entrySet()) {
                 node.getValue().print();
             }
+            System.out.println();
         }
 
         class Node {
@@ -111,6 +142,15 @@ public class MainWindow extends JFrame {
                 this.name = name;
                 this.x = x;
                 this.y = y;
+            }
+
+            public boolean isNode(int CordsX, int CordsY){
+                for(Node child: childs)
+                    if(CordsX < child.x + 25 && CordsX > child.x - 25 && CordsY < child.y + 25 && CordsY > child.y - 25){
+                        System.out.println("It is Node!!!!!");
+                        return true;
+                    }
+                return false;
             }
 
             public void addEdge(Node node) {
