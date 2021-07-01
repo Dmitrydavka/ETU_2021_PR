@@ -1,0 +1,29 @@
+private void drawArrow(Graphics2D g2d, Point2D.Double start, Point2D.Double finish, double radius, boolean isCurved) {
+
+            double angle1 = Math.atan2(finish.getY() - start.getY(), finish.getX() - start.getX() + ((isCurved) ? radius*2 : 0));
+            double cosx1 = Math.cos(angle1);
+            double siny1 = Math.sin(angle1);
+            double cosx2 = Math.cos(angle1 + Math.PI);
+            double siny2 = Math.sin(angle1 + Math.PI);
+
+            var fin1x = cosx1 * radius + start.getX() - ((isCurved) ? radius : 0);
+            var fin1y = siny1 * radius + start.getY() + ((isCurved) ? radius : 0);
+            var fin2x = cosx2 * radius + finish.getX() + ((isCurved) ? radius : 0);
+            var fin2y = siny2 * radius + finish.getY() + ((isCurved) ? radius : 0);
+
+            QuadCurve2D QC2D = new QuadCurve2D.Double(fin1x, fin1y,(fin2x+fin1x)/2, ((isCurved) ? (fin2x+fin1x)/2: (fin2y+fin1y)/2), fin2x, fin2y);
+            AffineTransform tx = new AffineTransform();
+            AffineTransform oldTx = g2d.getTransform();
+            Polygon polygon = new Polygon();
+            polygon.addPoint(0, 2);
+            polygon.addPoint(-5, -5);
+            polygon.addPoint(5, -5);
+
+            double angle = Math.atan2(QC2D.getY2() - ((isCurved) ? QC2D.getCtrlY() : QC2D.getY1()), QC2D.getX2() - ((isCurved) ? QC2D.getCtrlX() : QC2D.getX1()));
+            tx.translate(QC2D.getX2(), QC2D.getY2());
+            tx.rotate((angle - Math.PI / 2d));
+            g2d.setTransform(tx);
+            g2d.fill(polygon);
+            g2d.setTransform(oldTx);
+            g2d.draw(QC2D);
+        }
